@@ -48,7 +48,7 @@ byte digit_col0[10][7] = {
   {0x0F, 0x08, 0x08, 0x0F, 0x09, 0x09, 0x0F}, // 6
   {0x0F, 0x09, 0x09, 0x09, 0x01, 0x01, 0x01}, // 7
   {0x0F, 0x09, 0x09, 0x0F, 0x09, 0x09, 0x0F}, // 8
-  {0x0F, 0x09, 0x09, 0x0F, 0x01, 0x01, 0x01}  // 9
+  {0x0F, 0x09, 0x09, 0x0F, 0x01, 0x01, 0x0F}  // 9
 };
 // 10의 자리
 byte digit_col1[10][7];
@@ -138,9 +138,9 @@ void loop() {
     digitalWrite(TPIN1, LOW);
   } else {
     long distance1 = echo_duration1 / 58;
-    Serial.print("distance1: ");
-    Serial.print(distance1);
-    Serial.print(" cm, ");
+//    Serial.print("distance1: ");
+//    Serial.print(distance1);
+//    Serial.print(" cm, ");
     if(distance1 < 5) {
       pass1 = true;
       startTime = millis();
@@ -155,9 +155,9 @@ void loop() {
     digitalWrite(TPIN2, LOW);
   } else {
     long distance2 = echo_duration2 / 58;
-    Serial.print("distance2: ");
-    Serial.print(distance2);
-    Serial.println(" cm");
+//    Serial.print("distance2: ");
+//    Serial.print(distance2);
+//    Serial.println(" cm");
     if(distance2 < 5) {
       pass2 = true;
       endTime = millis();
@@ -175,23 +175,24 @@ void loop() {
 //    Serial.print("# seconds: ");
 //    Serial.print(seconds);
 //    Serial.println(" s");
-    Serial.print("# speed: ");
-    Serial.print(carSpeed);
-    Serial.println(" cm/s");
+//    Serial.print("# speed: ");
+//    Serial.print(carSpeed);
+//    Serial.println(" cm/s");
 
     int num1 = (int)carSpeed / 10;
     int num2 = (int)carSpeed % 10;
 
-    Serial.print(num1);
-    Serial.print("  ");
-    Serial.println(num2);
+//    Serial.print(num1);
+//    Serial.print("  ");
+//    Serial.println(num2);
+    Serial.print((int)carSpeed); // raspberry pi에서 읽을 데이터
 
     digitalWrite(GLED, HIGH);
     
     for(int j=0; j<=500; j++) { // 숫자를 반복해서 보여줌 (긴 시간동안 숫자 확인 가능)
       for(int i=0; i<7; i++) {
       digitalWrite(latchPin, LOW);
-      shiftOut(dataPin, clockPin, LSBFIRST, 0xFF ^ (digit_col1[num1][i] | digit_col0[num2][i]));
+      shiftOut(dataPin, clockPin, MSBFIRST, 0xFF ^ (digit_col1[num1][i] | digit_col0[num2][i]));
       digitalWrite(latchPin, HIGH);
 
       digitalWrite(R1,0x80 & digit_row[i]);
